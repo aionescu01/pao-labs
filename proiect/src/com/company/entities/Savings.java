@@ -1,5 +1,8 @@
 package com.company.entities;
 
+import com.company.services.AccountService;
+import com.company.services.PersonService;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,6 +14,10 @@ public class Savings extends Account {
     private double interest_rate;
     private double[] balance_history;
 
+
+    PersonService personService = PersonService.getInstance();
+    AccountService accountService = AccountService.getInstance();
+
     public Savings() {
     }
 
@@ -20,7 +27,7 @@ public class Savings extends Account {
         this.interest_rate = interest_rate;
         this.balance_history = new double[1];
         this.balance_history[0] = this.getBalance();
-        AddAccount(this);
+        personService.AddAccount(this,this);
     }
 
     public Savings(Person p, double balance, LocalDate opening_date, int period, double interest_rate) {
@@ -29,7 +36,7 @@ public class Savings extends Account {
         this.interest_rate = interest_rate;
         this.balance_history = new double[1];
         this.balance_history[0] = this.getBalance();
-        AddAccount(this);
+        personService.AddAccount(this,this);
     }
 
     public Savings(String name, String UID, String address, double balance, LocalDate opening_date, int period, double interest_rate) {
@@ -38,7 +45,7 @@ public class Savings extends Account {
         this.interest_rate = interest_rate;
         this.balance_history = new double[1];
         this.balance_history[0] = this.getBalance();
-        AddAccount(this);
+        personService.AddAccount(this,this);
     }
 
     public int getPeriod() {
@@ -65,32 +72,32 @@ public class Savings extends Account {
         this.balance_history = balance_history;
     }
 
-    @Override
-    public Statement doStatement() {
-        System.out.println("-----------------STATEMENT-------------------");
-        System.out.println(getBank() + " BANK");
-        System.out.println("Debit account of " + getName());
-        System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
-        System.out.println("Current balance = " + getBalance());
-        System.out.println("Past transactions below: ");
-        for (Transaction i : getTransaction_history())
-            System.out.println(i.getTransaction());
-        System.out.println("--------------END OF STATEMENT---------------");
-        return new Statement(this);
-    }
+//    @Override
+//    public Statement doStatement() {
+//        System.out.println("-----------------STATEMENT-------------------");
+//        System.out.println(getBank() + " BANK");
+//        System.out.println("Debit account of " + getName());
+//        System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
+//        System.out.println("Current balance = " + getBalance());
+//        System.out.println("Past transactions below: ");
+//        for (Transaction i : getTransaction_history())
+//            System.out.println(i.getTransaction());
+//        System.out.println("--------------END OF STATEMENT---------------");
+//        return new Statement(this);
+//    }
 
 
 
-    @Override
-    public Transaction AddFunds(Transaction t,double sum, String Bank) {
-        setBalance(getBalance()+sum);
-        t.setSum(sum);
-        t.setTransaction("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank  +
-                ", account balance = " + getBalance());
-        t.setDate(LocalDateTime.now());
-        AddTransaction(t);
-        return t;
-    }
+//    @Override
+//    public Transaction AddFunds(Transaction t,double sum, String Bank) {
+//        setBalance(getBalance()+sum);
+//        t.setSum(sum);
+//        t.setTransaction("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank  +
+//                ", account balance = " + getBalance());
+//        t.setDate(LocalDateTime.now());
+//        personService.AddTransaction(getperson(),t);
+//        return t;
+//    }
 
 
 

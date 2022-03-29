@@ -20,26 +20,27 @@ public class Main {
         Savings s = new Savings(a3, 6, 1.6);
         Savings c = new Savings(a3, 12, 1.9);
 
-        Account tea = new Debit(a2,"Gold");
+        Debit tea = new Debit(a2,"Gold");
         Transaction tr = new Transaction(tea);
-        tea.AddFunds(tr,15,"ING");
 
-        Card card = new Card(alex,a2);
-        Card card2 = new Card(alex,a2);
-        System.out.println(card.getCard_holder());
-        System.out.println(card.getAccount());
-        System.out.println(card.getCard_number());
-        System.out.println(Card.getUsed_numbers());
-        System.out.println(Card.getAccount_ids());
-
+//        Card card = new Card(alex,a2);
+//        Card card2 = new Card(alex,a2);
+//        System.out.println(card.getCard_holder());
+//        System.out.println(card.getAccount());
+//        System.out.println(card.getCard_number());
+//        System.out.println(Card.getUsed_numbers());
+//        System.out.println(Card.getAccount_ids());
 
 
-        PersonService computerService = PersonService.getInstance();
+
+        PersonService personService = PersonService.getInstance();
         DebitService debitService = DebitService.getInstance();
         SavingsService savingsService = SavingsService.getInstance();
         StatementService statementService = StatementService.getInstance();
         TransactionService transactionService = TransactionService.getInstance();
         AccountService accountService = AccountService.getInstance();
+
+
 //        System.out.println(a1.getId());
 //        accountService.addAccount(a1);
 //        System.out.println(accountService.getAccountById(1000));
@@ -48,34 +49,26 @@ public class Main {
 //        p.AddStatement(tea.doStatement());
 //        System.out.println(p);
 
-        //System.out.println(tea.getBalance());
-        //((Debit) tea).AddFunds(tr, 15,"ING");
-        //System.out.println(tea.getBalance());
-        //alex.AddStatement(tea.doStatement());
-        //((Debit) tea).AddFunds(tr, 15,"ING");
-        //System.out.println(tea.getBalance());
-        //System.out.println(((Debit) tea).getAccount_type());
-       // alex.AddStatement(tea.doStatement());
+
+
+
+        //personService.AddStatement(alex,tea.doStatement());
         //System.out.println(alex.getStatements_history());
+        personService.AddAccount(alex,tea);
+        tr = new Transaction(tea);
+        personService.AddTransaction(alex,debitService.AddFunds(tea,tr,15,"ING"));
+        tr = new Transaction(tea);
+        //personService.AddTransaction(alex,debitService.AddFunds(tea,tr,23,"BCR"));
+        personService.AddTransaction(accountService.getperson(tea),debitService.AddFunds(tea,tr,23,"BCR"));
         //System.out.println(alex.getTransaction_history());
+        personService.AddStatement(alex,debitService.doStatement(tea));
+        personService.AddAccount(alex,d);
 
-
-        //((Debit) tea).AddFunds(tr, 15,"ING");
-//        alex.AddStatement(tea.doStatement());
+        personService.AddAccount(alex,c);
+        personService.AddAccount(alex,s);
+        // System.out.println(alex);
 //        System.out.println(alex.getStatements_history());
-//        Transaction tr = new Transaction(tea);
-//        alex.AddTransaction(tea.AddFunds(tr,15,"ING"));
-//        tr = new Transaction(tea);
-//        alex.AddTransaction(tea.AddFunds(tr,23,"BCR"));
-//        //System.out.println(alex.getTransaction_history());
-//        //alex.AddStatement(tea.doStatement());
-//        alex.AddAccount(d);
-//        alex.AddAccount(tea);
-//        alex.AddAccount(c);
-//        alex.AddAccount(s);
-//        System.out.println(alex.getAccounts());
-//        //System.out.println(alex.getStatements_history());
-
+//        System.out.println(alex.getTransaction_history());
 
     }
 }

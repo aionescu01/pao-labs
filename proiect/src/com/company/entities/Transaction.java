@@ -1,5 +1,8 @@
 package com.company.entities;
 
+import com.company.services.AccountService;
+import com.company.services.PersonService;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,12 +20,28 @@ public class Transaction {
     private int id;
     private static int number_of_transactions=1;
 
+    PersonService personService = PersonService.getInstance();
+    AccountService accountService = AccountService.getInstance();
+
     public Transaction(){}
 
     public Transaction(Account acc){
         this.account=acc;
         this.id=number_of_transactions;
         number_of_transactions++;
+        //personService.AddTransaction(new Person(acc.getName(),acc.getUID(),acc.getAddress(),acc.getPerson_id(),acc.getAccounts(),acc.getStatements_history(),acc.getTransaction_history()),this);
+    }
+
+
+
+    public Transaction(Account acc,double sum, String transaction, LocalDateTime date){
+        this.account=acc;
+        this.sum=sum;
+        this.transaction=transaction;
+        this.date=date;
+        this.id=number_of_transactions;
+        number_of_transactions++;
+        //personService.AddTransaction(new Person(acc.getName(),acc.getUID(),acc.getAddress(),acc.getPerson_id(),acc.getAccounts(),acc.getStatements_history(),acc.getTransaction_history()),this);
     }
 
     public String getTransaction() {

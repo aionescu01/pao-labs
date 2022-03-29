@@ -1,5 +1,7 @@
 package com.company.entities;
 
+import com.company.services.AccountService;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -18,21 +20,20 @@ public class Statement {
         this.id=number_of_statements;
         number_of_statements++;
     }
+    AccountService accountService = AccountService.getInstance();
 
     public Statement(Debit debit) {
         this.debit = debit;//sa pot sa dau get la contul pt care s a facut statementul
         this.statement = this.statement + "-----------------STATEMENT-------------------\n" + debit.getBank() + " BANK\n" + "Debit account of " +
                 debit.getName() + "\nStatement made on the date: " + LocalDate.now() + " " + LocalTime.now() + "\nCurrent balance = " + debit.getBalance()
                 + "\nPast transactions below:\n";
-        //System.out.println(debit.getTransaction_history());
         for (Transaction i : debit.getTransaction_history()) {
-//            System.out.println("a");
-//            System.out.println(i);
             this.statement = this.statement + i.getTransaction() + "\n";
         }
         this.statement = this.statement + "--------------END OF STATEMENT---------------";
         this.id=number_of_statements;
         number_of_statements++;
+        debit.personService.AddStatement(new Person(debit.getName(),debit.getUID(),debit.getAddress(),debit.getPerson_id(),debit.getAccounts(),debit.getStatements_history(),debit.getTransaction_history()),this);
     }
 
     public Statement(Savings savings) {

@@ -1,15 +1,15 @@
-package com.company.entities;
+    package com.company.entities;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Objects;
+    import java.time.LocalDate;
+    import java.time.LocalTime;
+    import java.util.Objects;
 
-public class Account extends Person {
+    public class Account extends Person {
     private double balance;
     private LocalDate opening_date;
-    private static int number_of_accounts=1000;
+    private static int number_of_accounts = 1000;
     private int id;
-    private static final String bank= "ING";
+    private static final String bank = "ING";
     //sa adaug id ul contului ca sa se poata da la tranzactii
 
     public Account() {
@@ -18,17 +18,17 @@ public class Account extends Person {
 
     public Account(Account a) {
         super(a);
-        this.balance=a.balance;
-        this.opening_date=a.opening_date;
-        this.id=number_of_accounts;
+        this.balance = a.balance;
+        this.opening_date = a.opening_date;
+        this.id = number_of_accounts;
         number_of_accounts++;
     }
 
-    public Account(Person p,double balance, LocalDate opening_date) {
+    public Account(Person p, double balance, LocalDate opening_date) {
         super(p);
         this.balance = balance;
         this.opening_date = opening_date;
-        this.id=number_of_accounts;
+        this.id = number_of_accounts;
         number_of_accounts++;
     }
 
@@ -36,7 +36,7 @@ public class Account extends Person {
         super(name, UID, address);
         this.balance = balance;
         this.opening_date = opening_date;
-        this.id=number_of_accounts;
+        this.id = number_of_accounts;
         number_of_accounts++;
     }
 
@@ -73,21 +73,29 @@ public class Account extends Person {
         this.opening_date = opening_date;
     }
 
-    public String getBank(){ return bank;}
+    public String getBank() {
+        return bank;
+    }
 
-    public Statement doStatement()
-    {
+    public Statement doStatement() {
         System.out.println("statement");
         return null;
     }
 
-    public Transaction AddFunds(Transaction t,double sum, String Bank) {
-        balance += sum;
-        t.setSum(sum);
-        t.setTransaction("Added the sum of " + sum + " to account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank +
-                ", account balance = " + balance);
-        return t;
-    }
+//    public Transaction AddFunds(Transaction t,double sum, String Bank) {
+//        balance += sum;
+//        t.setSum(sum);
+//        t.setTransaction("Added the sum of " + sum + " to account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank +
+//                ", account balance = " + balance);
+//        return t;
+//    }
+//
+//    public Person getperson(){
+//        Person p = new Person(this.getName(),this.getUID(),this.getAddress());
+//        p.setPerson_id(this.getPerson_id()-1);
+//        p.setNumber_of_people(Person.getNumber_of_people()-1);
+//        return p;
+//    }
 
 
     @Override

@@ -4,10 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import com.company.services.*;
 
 public class Debit extends Account {
     private String account_type;
     //cont tip gold silver
+    PersonService personService = PersonService.getInstance();
 
     public Debit() {
     }
@@ -15,20 +17,20 @@ public class Debit extends Account {
     public Debit(Account account, String account_type) {
         super(account);
         this.account_type=account_type;
-        AddAccount(this);
+        personService.AddAccount(this,this);
     }
 
     public Debit(Person p, double balance, LocalDate opening_date, String account_type) {
         super(p, balance, opening_date);
         this.account_type = account_type;
-        AddAccount(this);
+        personService.AddAccount(this,this);
 
     }
 
     public Debit(String name, String UID, String address, double balance, LocalDate opening_date, String account_type) {
         super(name, UID, address, balance, opening_date);
         this.account_type = account_type;
-        AddAccount(this);
+        personService.AddAccount(this,this);
     }
 
     public String getAccount_type() {
@@ -39,39 +41,42 @@ public class Debit extends Account {
         this.account_type = account_type;
     }
 
-    @Override
-    public Statement doStatement() {
-        System.out.println("-----------------STATEMENT-------------------");
-        System.out.println(getBank() + " BANK");
-        System.out.println("Debit account of " + getName());
-        System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
-        System.out.println("Current balance = " + getBalance());
-        System.out.println("Past transactions below: ");
-        for (Transaction i : getTransaction_history())
-            System.out.println(i.getTransaction());
-        System.out.println("--------------END OF STATEMENT---------------");
-        return new Statement(this);
-    }
+//    @Override
+//    public Statement doStatement() {
+//        System.out.println("-----------------STATEMENT-------------------");
+//        System.out.println(getBank() + " BANK");
+//        System.out.println("Debit account of " + getName());
+//        System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
+//        System.out.println("Current balance = " + getBalance());
+//        System.out.println("Past transactions below: ");
+//        for (Transaction i : getTransaction_history())
+//            System.out.println(i.getTransaction());
+//        System.out.println("--------------END OF STATEMENT---------------");
+//        return new Statement(this);
+//    }
 
 
 
-    @Override
-    public Transaction AddFunds(Transaction t,double sum, String Bank) {
-        double fee;
-        if (!Objects.equals(Bank, getBank()))
-            if (Objects.equals(getAccount_type(), "Gold"))
-                fee = 2;
-            else fee = 5;
-        else fee = 0;
-        double x = getBalance();
-        setBalance(x+sum-fee);
-        t.setSum(sum);
-        t.setTransaction("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
-                ", account balance = " + getBalance());
-        t.setDate(LocalDateTime.now());
-        AddTransaction(t);
-        return t;
-    }
+//    @Override
+//    public Transaction AddFunds(Transaction t,double sum, String Bank) {
+//        double fee;
+//        if (!Objects.equals(Bank, getBank()))
+//            if (Objects.equals(getAccount_type(), "Gold"))
+//                fee = 2;
+//            else fee = 5;
+//        else fee = 0;
+//        double x = getBalance();
+//        setBalance(x+sum-fee);
+//        t.setSum(sum);
+//        t.setTransaction("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
+//                ", account balance = " + getBalance());
+//        t.setDate(LocalDateTime.now());
+//        personService.AddTransaction(this,t);
+//        return t;
+//        Account ac = this;
+//        return new Transaction(ac,sum,("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
+//                ", account balance = " + getBalance()),LocalDateTime.now());
+//    }
 //
 //    public void WithdrawFunds(double sum, String Bank) {
 //        double fee;

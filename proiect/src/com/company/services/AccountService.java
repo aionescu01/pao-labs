@@ -1,7 +1,11 @@
 package com.company.services;
 
 import com.company.entities.Account;
+import com.company.entities.Person;
+import com.company.entities.Transaction;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +21,22 @@ public class AccountService {
         }
         return instance;
     }
+
+    public Transaction AddFunds(Account a, Transaction t, double sum, String Bank) {
+        a.setBalance(a.getBalance()+sum);
+        t.setSum(sum);
+        t.setTransaction("Added the sum of " + sum + " to account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank +
+                ", account balance = " + a.getBalance());
+        return t;
+    }
+
+    public Person getperson(Account a){
+        Person p = new Person(a.getName(),a.getUID(),a.getAddress());
+        p.setPerson_id(a.getPerson_id()-1);
+        Person.setNumber_of_people(Person.getNumber_of_people()-1);
+        return p;
+    }
+
 
     public List<Account> getAccounts(){
         return new ArrayList<>(this.Accounts);

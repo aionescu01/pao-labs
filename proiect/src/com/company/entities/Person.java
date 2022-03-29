@@ -40,6 +40,16 @@ public class Person {
       number_of_people++;
    }
 
+   public Person(String name, String UID, String address, int person_id, List<Account> accounts, List<Statement> statements_history, List<Transaction> transaction_history) {
+      this.name = name;
+      this.UID = UID;
+      this.address = address;
+      this.person_id = person_id;
+      this.accounts = accounts;
+      this.statements_history = statements_history;
+      this.transaction_history = transaction_history;
+   }
+
    public static int getNumber_of_people() {
       return number_of_people;
    }
@@ -93,22 +103,22 @@ public class Person {
       this.address = address;
    }
 
+//   public void AddAccount(Account a){
+//      accounts.add(a);
+//      accounts.sort(new Sortbyperiod());
+//      //savings accounts get sorted by shortest period
+//   }
+//
+//   public void AddStatement(Statement s){
+//      statements_history.add(s);
+//   }
+//
+//   public void AddTransaction(Transaction t)
+//   {
+//      transaction_history.add(t);
+//      transaction_history.sort(new Sortbydate());
+//   }
 
-   public void AddAccount(Account a){
-      accounts.add(a);
-      accounts.sort(new Sortbyperiod());
-      //savings accounts get sorted by shortest period
-   }
-
-   public void AddStatement(Statement s){
-      statements_history.add(s);
-   }
-
-   public void AddTransaction(Transaction t)
-   {
-      transaction_history.add(t);
-      transaction_history.sort(new Sortbydate());
-   }
 
    public List<Account> getAccounts() {
       return accounts;
@@ -136,5 +146,4 @@ public class Person {
               '}';
    }
 }
-
 
