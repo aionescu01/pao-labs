@@ -6,6 +6,8 @@ public class User {
     private String username;
     private String password;
     private String role;
+    private static int number_of_users=0;
+    private int user_id;
 
     public User(){}
 
@@ -14,6 +16,24 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.user_id=number_of_users;
+        number_of_users++;
+    }
+
+    public static int getNumber_of_users() {
+        return number_of_users;
+    }
+
+    public static void setNumber_of_users(int number_of_users) {
+        User.number_of_users = number_of_users;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public Person getUser_details() {

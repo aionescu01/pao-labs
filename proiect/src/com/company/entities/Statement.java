@@ -24,7 +24,7 @@ public class Statement {
 
     public Statement(Debit debit) {
         this.debit = debit;//sa pot sa dau get la contul pt care s a facut statementul
-        this.statement = this.statement + "-----------------STATEMENT-------------------\n" + debit.getBank() + " BANK\n" + "Debit account of " +
+        this.statement = this.statement + "-----------------STATEMENT-------------------\n" + debit.getBank() + " BANK\n" + "Debit account, id "+ debit.getId() +" of " +
                 debit.getName() + "\nStatement made on the date: " + LocalDate.now() + " " + LocalTime.now() + "\nCurrent balance = " + debit.getBalance()
                 + "\nPast transactions below:\n";
         for (Transaction i : debit.getTransaction_history()) {

@@ -22,6 +22,7 @@ public class Main {
 
         Debit tea = new Debit(a2,"Gold");
         Transaction tr = new Transaction(tea);
+        Transaction trd = new Transaction(d);
 
 //        Card card = new Card(alex,a2);
 //        Card card2 = new Card(alex,a2);
@@ -55,17 +56,31 @@ public class Main {
         //personService.AddStatement(alex,tea.doStatement());
         //System.out.println(alex.getStatements_history());
         personService.AddAccount(alex,tea);
+
+        //adding funds
         tr = new Transaction(tea);
         personService.AddTransaction(alex,debitService.AddFunds(tea,tr,15,"ING"));
+
+        //withdrawing funds
         tr = new Transaction(tea);
-        //personService.AddTransaction(alex,debitService.AddFunds(tea,tr,23,"BCR"));
-        personService.AddTransaction(accountService.getperson(tea),debitService.AddFunds(tea,tr,23,"BCR"));
+        personService.AddTransaction(alex,debitService.WithdrawFunds(tea,tr,50,"BCR"));
+
+        //sending funds
+        trd = new Transaction(d);
+        tr = new Transaction(tea);
+        for(Transaction i : debitService.SendFunds(tea,d,tr,trd,55))
+        personService.AddTransaction(alex,i);
+
+
         //System.out.println(alex.getTransaction_history());
         personService.AddStatement(alex,debitService.doStatement(tea));
+        personService.AddStatement(alex,debitService.doStatement(d));
         personService.AddAccount(alex,d);
 
         personService.AddAccount(alex,c);
         personService.AddAccount(alex,s);
+
+        System.out.println(alex);
         // System.out.println(alex);
 //        System.out.println(alex.getStatements_history());
 //        System.out.println(alex.getTransaction_history());

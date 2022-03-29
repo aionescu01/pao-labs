@@ -1,9 +1,6 @@
 package com.company.services;
 
-import com.company.entities.Debit;
-import com.company.entities.Person;
-import com.company.entities.Statement;
-import com.company.entities.Transaction;
+import com.company.entities.*;
 
 
 import java.time.LocalDate;
@@ -32,7 +29,8 @@ public class DebitService {
     public Statement doStatement(Debit d) {
         System.out.println("-----------------STATEMENT-------------------");
         System.out.println(d.getBank() + " BANK");
-        System.out.println("Debit account of " + d.getName());
+        System.out.println("Debit account, id "+ d.getId() +" of " +
+                d.getName());
         System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
         System.out.println("Current balance = " + d.getBalance());
         System.out.println("Past transactions below: ");
@@ -64,7 +62,49 @@ public class DebitService {
 
         personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),t);
         return t;
+    }
 
+    public Transaction WithdrawFunds(Debit d,Transaction t, double sum, String Bank) {
+        double fee;
+        if (!Objects.equals(Bank, d.getBank()))
+            if (Objects.equals(d.getAccount_type(), "Gold"))
+                fee = 2;
+            else fee = 5;
+        else fee = 0;
+        d.setBalance(d.getBalance()-sum-fee);
+        t.setSum(sum);
+        t.setTransaction("Withdrawn the sum of " + sum + " from debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
+                ", account balance = " + d.getBalance());
+        t.setDate(LocalDateTime.now());
+
+        personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),t);
+        return t;
+    }
+
+    public List<Transaction> SendFunds(Debit d, Account a, Transaction tsent,Transaction treceived, double sum) {
+
+        d.setBalance(d.getBalance()-sum);
+        a.setBalance(a.getBalance()+sum);
+        tsent.setSum(sum);
+        tsent.setTransaction("Sent the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
+        tsent.setDate(LocalDateTime.now());
+
+//        Transaction sentto = new Transaction(a);
+//        sentto.setSum(sum);
+//        sentto.setTransaction("Received the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
+//        sentto.setDate(LocalDateTime.now());
+
+        treceived.setSum(sum);
+        treceived.setTransaction("Received the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
+        treceived.setDate(LocalDateTime.now());
+
+        personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),tsent);
+        personService.AddTransaction(new Person(a.getName(),a.getUID(),a.getAddress(),a.getPerson_id(),a.getAccounts(),a.getStatements_history(),a.getTransaction_history()),treceived);
+
+        List<Transaction> returnlist = new ArrayList<>();
+        returnlist.add(tsent);
+        returnlist.add(treceived);
+        return returnlist;
     }
 
     public List<Debit> getdebit_accts(){
