@@ -14,11 +14,12 @@ public class DebitService {
     private List<Debit> debit_accts = new ArrayList<>();
     private static DebitService instance;
 
-    private DebitService(){}
+    private DebitService() {
+    }
 
-    public static DebitService getInstance(){
-        if(instance==null){
-            instance=new DebitService();
+    public static DebitService getInstance() {
+        if (instance == null) {
+            instance = new DebitService();
         }
         return instance;
     }
@@ -29,7 +30,7 @@ public class DebitService {
     public Statement doStatement(Debit d) {
         System.out.println("-----------------STATEMENT-------------------");
         System.out.println(d.getBank() + " BANK");
-        System.out.println("Debit account, id "+ d.getId() +" of " +
+        System.out.println("Debit account, id " + d.getId() + " of " +
                 d.getName());
         System.out.println("Statement made on the date: " + LocalDate.now() + " " + LocalTime.now());
         System.out.println("Current balance = " + d.getBalance());
@@ -40,89 +41,107 @@ public class DebitService {
         return new Statement(d);
     }
 
-    public Person getperson(Debit a){
-        Person p = new Person(a.getName(),a.getUID(),a.getAddress());
-        p.setPerson_id(a.getPerson_id()-1);
-        Person.setNumber_of_people(Person.getNumber_of_people()-1);
+    public Person getperson(Debit a) {
+        Person p = new Person(a.getName(), a.getUID(), a.getAddress());
+        p.setPerson_id(a.getPerson_id() - 1);
+        Person.setNumber_of_people(Person.getNumber_of_people() - 1);
         return p;
     }
 
-    public Transaction AddFunds(Debit d,Transaction t, double sum, String Bank) {
+    public Transaction AddFunds(Debit d, Transaction t, double sum, String Bank) {
         double fee;
         if (!Objects.equals(Bank, d.getBank()))
             if (Objects.equals(d.getAccount_type(), "Gold"))
                 fee = 2;
             else fee = 5;
         else fee = 0;
-        d.setBalance(d.getBalance()+sum-fee);
+        d.setBalance(d.getBalance() + sum - fee);
         t.setSum(sum);
         t.setTransaction("Added the sum of " + sum + " to debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
                 ", account balance = " + d.getBalance());
         t.setDate(LocalDateTime.now());
 
-        personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),t);
+        personService.AddTransaction(new Person(d.getName(), d.getUID(), d.getAddress(), d.getPerson_id(), d.getAccounts(), d.getStatements_history(), d.getTransaction_history()), t);
         return t;
     }
 
-    public Transaction WithdrawFunds(Debit d,Transaction t, double sum, String Bank) {
+    public Transaction WithdrawFunds(Debit d, Transaction t, double sum, String Bank) {
         double fee;
         if (!Objects.equals(Bank, d.getBank()))
             if (Objects.equals(d.getAccount_type(), "Gold"))
                 fee = 2;
             else fee = 5;
         else fee = 0;
-        d.setBalance(d.getBalance()-sum-fee);
-        t.setSum(sum);
-        t.setTransaction("Withdrawn the sum of " + sum + " from debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
-                ", account balance = " + d.getBalance());
-        t.setDate(LocalDateTime.now());
+        if (d.getBalance() - sum - fee >= 0) {
+            d.setBalance(d.getBalance() - sum - fee);
+            t.setSum(sum);
+            t.setTransaction("Withdrawn the sum of " + sum + " from debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
+                    ", account balance = " + d.getBalance());
+            t.setDate(LocalDateTime.now());
 
-        personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),t);
-        return t;
+            personService.AddTransaction(new Person(d.getName(), d.getUID(), d.getAddress(), d.getPerson_id(), d.getAccounts(), d.getStatements_history(), d.getTransaction_history()), t);
+            return t;
+        } else {
+            t.setSum(sum);
+            t.setTransaction("FAILED: INSUFFICIENT FUNDS: Attempted to withdraw the sum of " + sum + " from debit account on the date " + LocalDate.now() + " " + LocalTime.now() + " from bank " + Bank + " with fee " + fee +
+                    ", account balance = " + d.getBalance());
+            t.setDate(LocalDateTime.now());
+            personService.AddTransaction(new Person(d.getName(), d.getUID(), d.getAddress(), d.getPerson_id(), d.getAccounts(), d.getStatements_history(), d.getTransaction_history()), t);
+            return t;
+        }
     }
 
-    public List<Transaction> SendFunds(Debit d, Account a, Transaction tsent,Transaction treceived, double sum) {
+    public List<Transaction> SendFunds(Debit d, Account a, Transaction tsent, Transaction treceived, double sum) {
 
-        d.setBalance(d.getBalance()-sum);
-        a.setBalance(a.getBalance()+sum);
-        tsent.setSum(sum);
-        tsent.setTransaction("Sent the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
-        tsent.setDate(LocalDateTime.now());
+        if (d.getBalance() - sum >= 0) {
+            d.setBalance(d.getBalance() - sum);
+            a.setBalance(a.getBalance() + sum);
+            tsent.setSum(sum);
+            tsent.setTransaction("Sent the sum of " + sum + " from debit account " + d.getId() + " to account " + a.getId() + " on the date " + LocalDate.now() + " " + LocalTime.now());
+            tsent.setDate(LocalDateTime.now());
 
 //        Transaction sentto = new Transaction(a);
 //        sentto.setSum(sum);
 //        sentto.setTransaction("Received the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
 //        sentto.setDate(LocalDateTime.now());
 
-        treceived.setSum(sum);
-        treceived.setTransaction("Received the sum of " + sum + " from debit account "+ d.getId()  + " to account " + a.getId() +" on the date " + LocalDate.now() + " " + LocalTime.now());
-        treceived.setDate(LocalDateTime.now());
+            treceived.setSum(sum);
+            treceived.setTransaction("Received the sum of " + sum + " from debit account " + d.getId() + " to account " + a.getId() + " on the date " + LocalDate.now() + " " + LocalTime.now() + " account balance = " + d.getBalance());
+            treceived.setDate(LocalDateTime.now());
 
-        personService.AddTransaction(new Person(d.getName(),d.getUID(),d.getAddress(),d.getPerson_id(),d.getAccounts(),d.getStatements_history(),d.getTransaction_history()),tsent);
-        personService.AddTransaction(new Person(a.getName(),a.getUID(),a.getAddress(),a.getPerson_id(),a.getAccounts(),a.getStatements_history(),a.getTransaction_history()),treceived);
+            personService.AddTransaction(new Person(d.getName(), d.getUID(), d.getAddress(), d.getPerson_id(), d.getAccounts(), d.getStatements_history(), d.getTransaction_history()), tsent);
+            personService.AddTransaction(new Person(a.getName(), a.getUID(), a.getAddress(), a.getPerson_id(), a.getAccounts(), a.getStatements_history(), a.getTransaction_history()), treceived);
 
-        List<Transaction> returnlist = new ArrayList<>();
-        returnlist.add(tsent);
-        returnlist.add(treceived);
-        return returnlist;
+            List<Transaction> returnlist = new ArrayList<>();
+            returnlist.add(tsent);
+            returnlist.add(treceived);
+            return returnlist;
+        } else {
+            tsent.setSum(sum);
+            tsent.setTransaction("FAILED: INSUFFICIENT FUNDS: Attempted to send the sum of " + sum + " from debit account " + d.getId() + " to account " + a.getId() + " on the date " + LocalDate.now() + " " + LocalTime.now()+ " account balance = " + d.getBalance());
+            tsent.setDate(LocalDateTime.now());
+            personService.AddTransaction(new Person(d.getName(), d.getUID(), d.getAddress(), d.getPerson_id(), d.getAccounts(), d.getStatements_history(), d.getTransaction_history()), tsent);
+            List<Transaction> returnlist = new ArrayList<>();
+            returnlist.add(tsent);
+            return returnlist;
+        }
     }
 
-    public List<Debit> getdebit_accts(){
+    public List<Debit> getdebit_accts() {
         return new ArrayList<>(this.debit_accts);
     }
 
-    public Debit getDebitById(int id){
+    public Debit getDebitById(int id) {
         Debit db = new Debit();
-        for(Debit p : this.debit_accts)
-            if(p.getId()==id)
-                db=p;
+        for (Debit p : this.debit_accts)
+            if (p.getId() == id)
+                db = p;
         return db;
     }
 
-    public void updateDebit(int id, Debit Debit){
-        for(Debit p : this.debit_accts)
-            if(p.getId()==id)
-            {
+    public void updateDebit(int id, Debit Debit) {
+        for (Debit p : this.debit_accts)
+            if (p.getId() == id) {
                 this.debit_accts.remove(p);
                 Debit.setId(id);
                 this.debit_accts.add(Debit);
@@ -130,20 +149,19 @@ public class DebitService {
             }
     }
 
-    public void addDebit(Debit Debit){
+    public void addDebit(Debit Debit) {
         this.debit_accts.add(Debit);
     }
 
-    public void deleteDebitById(int id){
-        for(Debit p : this.debit_accts)
-            if(p.getId()==id)
-            {
+    public void deleteDebitById(int id) {
+        for (Debit p : this.debit_accts)
+            if (p.getId() == id) {
                 this.debit_accts.remove(p);
                 return;
             }
     }
 
-    public void deletedebit_accts(){
+    public void deletedebit_accts() {
         this.debit_accts.clear();
     }
 }
