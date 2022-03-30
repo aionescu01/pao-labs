@@ -8,7 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         //creating a person
         Person alex = new Person("Alexandru Ionescu","5011228","Str. Maior Coravu 55");
         Person ana = new Person("Ana Stan","6010502","Str. Maior Coravu 55");
@@ -27,19 +26,13 @@ public class Main {
         Debit d2 = new Debit(alex, 1200,LocalDate.now(), "Silver");
 
         //creating a debit/savings account with no configured entities
-        Savings s2 = new Savings("Prenume Nume","123456","Bl. Camil Ressu",15000,LocalDate.now(),12,1.5);
+        Savings s2 = new Savings("Prenume Nume","123456","Bld. Camil Ressu",15000,LocalDate.now(),12,1.5);
 
         //creating transactions for the account
         Transaction tr = new Transaction(d);
 
         //creating a card for the account of the person
         Card card = new Card(alex,d);
-
-//        System.out.println(card.getCard_holder());
-//        System.out.println(card.getAccount());
-//        System.out.println(card.getCard_number());
-//        System.out.println(Card.getUsed_numbers());
-//        System.out.println(Card.getAccount_ids());
 
         //instantiating the services
         PersonService personService = PersonService.getInstance();
@@ -90,11 +83,17 @@ public class Main {
         personService.AddStatement(alex,savingsService.doStatement(s));
         personService.AddStatement(alex,debitService.doStatement(d));
 
-        System.out.println(alex);
-        
+        //System.out.println(alex);
 
+        Person p = new Person("","","");
+        //example of one of the services(CRUD), all services have these functions
         personService.addPerson(alex);
         personService.addPerson(ana);
+        personService.addPerson(p);
+        System.out.println(personService.getPersonById(1));
+        personService.updatePerson(3,ana);
+        System.out.println(personService.getPeople());
+        personService.deletePersonById(2);
         System.out.println(personService.getPeople());
 
     }

@@ -7,7 +7,7 @@ public class Person {
    private String name;
    private String UID;
    private String address;
-   private static int number_of_people=0;
+   private static int number_of_people=1;
    private int person_id;
    private List<Account> accounts = new Vector<>();
    private List<Statement> statements_history = new Vector<>();
@@ -51,7 +51,7 @@ public class Person {
    }
 
    public static int getNumber_of_people() {
-      return number_of_people;
+      return number_of_people-1;
    }
 
    public static void setNumber_of_people(int number_of_people) {
