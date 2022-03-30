@@ -41,12 +41,12 @@ public class DebitService {
         return new Statement(d);
     }
 
-    public Person getperson(Debit a) {
-        Person p = new Person(a.getName(), a.getUID(), a.getAddress());
-        p.setPerson_id(a.getPerson_id() - 1);
-        Person.setNumber_of_people(Person.getNumber_of_people() - 1);
-        return p;
-    }
+//    public Person getperson(Debit a) {
+//        Person p = new Person(a.getName(), a.getUID(), a.getAddress());
+//        p.setPerson_id(a.getPerson_id() - 1);
+//        Person.setNumber_of_people(Person.getNumber_of_people() - 1);
+//        return p;
+//    }
 
     public Transaction AddFunds(Debit d, Transaction t, double sum, String Bank) {
         double fee;

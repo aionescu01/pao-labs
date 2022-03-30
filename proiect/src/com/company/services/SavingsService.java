@@ -41,12 +41,12 @@ public class SavingsService {
         return new Statement(d);
     }
 
-    public Person getperson(Savings a) {
-        Person p = new Person(a.getName(), a.getUID(), a.getAddress());
-        p.setPerson_id(a.getPerson_id() - 1);
-        Person.setNumber_of_people(Person.getNumber_of_people() - 1);
-        return p;
-    }
+//    public Person getperson(Savings a) {
+//        Person p = new Person(a.getName(), a.getUID(), a.getAddress());
+//        p.setPerson_id(a.getPerson_id() - 1);
+//        Person.setNumber_of_people(Person.getNumber_of_people() - 1);
+//        return p;
+//    }
 
     public Transaction AddFunds(Savings s, Transaction t, double sum) {
         if (s.getOpening_date().compareTo(LocalDate.now().minusMonths(s.getPeriod())) < 0) {

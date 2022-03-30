@@ -8,32 +8,40 @@ public class Main {
 
     public static void main(String[] args) {
 
-//clasa de tip person care are lista de conturi, poate sa fie lista asta sortata dupa tipul contului
-        //sau sa fie o lista de conturi de debit si una de savings, si alea de savings sa fie sortate dupa cate luni e perioada
 
+        //creating a person
         Person alex = new Person("Alexandru Ionescu","5011228","Str. Maior Coravu 55");
         Person ana = new Person("Ana Stan","6010502","Str. Maior Coravu 55");
+
+        //creating an account
         Account a1 = new Account(ana,100, LocalDate.now());
         Account a2 = new Account(alex,50, LocalDate.now());
         Account a3 = new Account(alex,1000, LocalDate.now().minusMonths(7));
+
+        //creating a debit/savings account with an already created account
         Debit d = new Debit(a2, "Silver");
         Savings s = new Savings(a3, 6, 1.6);
         Savings c = new Savings(a3, 12, 1.9);
 
-        Debit tea = new Debit(a2,"Gold");
-        Transaction tr = new Transaction(tea);
-        Transaction trd = new Transaction(d);
+        //creating a debit/savings account with a configured person
+        Debit d2 = new Debit(alex, 1200,LocalDate.now(), "Silver");
 
-//        Card card = new Card(alex,a2);
-//        Card card2 = new Card(alex,a2);
+        //creating a debit/savings account with no configured entities
+        Savings s2 = new Savings("Prenume Nume","123456","Bl. Camil Ressu",15000,LocalDate.now(),12,1.5);
+
+        //creating transactions for the account
+        Transaction tr = new Transaction(d);
+
+        //creating a card for the account of the person
+        Card card = new Card(alex,d);
+
 //        System.out.println(card.getCard_holder());
 //        System.out.println(card.getAccount());
 //        System.out.println(card.getCard_number());
 //        System.out.println(Card.getUsed_numbers());
 //        System.out.println(Card.getAccount_ids());
 
-
-
+        //instantiating the services
         PersonService personService = PersonService.getInstance();
         DebitService debitService = DebitService.getInstance();
         SavingsService savingsService = SavingsService.getInstance();
@@ -41,69 +49,53 @@ public class Main {
         TransactionService transactionService = TransactionService.getInstance();
         AccountService accountService = AccountService.getInstance();
 
-
-//        System.out.println(a1.getId());
-//        accountService.addAccount(a1);
-//        System.out.println(accountService.getAccountById(1000));
-
-
-//        p.AddStatement(tea.doStatement());
-//        System.out.println(p);
-
+        //adding account to person
         personService.AddAccount(alex,s);
+        personService.AddAccount(alex,d);
+        personService.AddAccount(alex,s2);
+        personService.AddAccount(alex,d2);
+
+        //adding funds
+        tr = new Transaction(d);
+        personService.AddTransaction(alex,debitService.AddFunds(d,tr,15,"ING"));
+
+        //withdrawing funds
+        tr = new Transaction(d);
+        personService.AddTransaction(alex,debitService.WithdrawFunds(d,tr,50,"BCR"));
+
+        //sending funds
+        Transaction trd = new Transaction(d2);
+        tr = new Transaction(d);
+        for(Transaction i : debitService.SendFunds(d2,d,tr,trd,5))
+            personService.AddTransaction(alex,i);
+
+
 
         //adding funds
         tr = new Transaction(s);
         personService.AddTransaction(alex,savingsService.AddFunds(s,tr,15));
 
         //withdrawing funds
-        tr = new Transaction(tea);
+        tr = new Transaction(s);
         personService.AddTransaction(alex,savingsService.WithdrawFunds(s,tr,50));
 
         //sending funds
-        trd = new Transaction(d);
-        tr = new Transaction(tea);
-        for(Transaction i : savingsService.SendFunds(s,d,tr,trd,5))
+        trd = new Transaction(s2);
+        tr = new Transaction(s);
+        for(Transaction i : savingsService.SendFunds(s,s2,tr,trd,5))
             personService.AddTransaction(alex,i);
 
 
-        //System.out.println(alex.getTransaction_history());
+        //getting account statement
         personService.AddStatement(alex,savingsService.doStatement(s));
+        personService.AddStatement(alex,debitService.doStatement(d));
 
+        System.out.println(alex);
+        
 
-
-
-        //personService.AddStatement(alex,tea.doStatement());
-        //System.out.println(alex.getStatements_history());
-//        personService.AddAccount(alex,tea);
-//
-//        //adding funds
-//        tr = new Transaction(tea);
-//        personService.AddTransaction(alex,debitService.AddFunds(tea,tr,15,"ING"));
-//
-//        //withdrawing funds
-//        tr = new Transaction(tea);
-//        personService.AddTransaction(alex,debitService.WithdrawFunds(tea,tr,50,"BCR"));
-//
-//        //sending funds
-//        trd = new Transaction(d);
-//        tr = new Transaction(tea);
-//        for(Transaction i : debitService.SendFunds(tea,d,tr,trd,5))
-//        personService.AddTransaction(alex,i);
-//
-//
-//        //System.out.println(alex.getTransaction_history());
-//        personService.AddStatement(alex,debitService.doStatement(tea));
-//        personService.AddStatement(alex,debitService.doStatement(d));
-//        personService.AddAccount(alex,d);
-//
-//        personService.AddAccount(alex,c);
-//        personService.AddAccount(alex,s);
-
-        //System.out.println(alex);
-        // System.out.println(alex);
-//        System.out.println(alex.getStatements_history());
-//        System.out.println(alex.getTransaction_history());
+        personService.addPerson(alex);
+        personService.addPerson(ana);
+        System.out.println(personService.getPeople());
 
     }
 }
